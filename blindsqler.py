@@ -8,7 +8,7 @@ class QueryHandler(object):
 		self.field = field
 	def query(self, data):
 		""" Retorna True si la consulta devuelve resultados, sino False
-		data es la expresión generada por Squler"""
+		data es la expresión generada por blindsqler"""
 		pass
 
 def adivinaint(handler, rango):

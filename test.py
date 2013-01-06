@@ -2,11 +2,11 @@
 #-*- coding: utf8 -*-
 
 import unittest
-import squler
+import blindsqler
 import re
 from urllib import urlopen, urlencode
 
-class NoSQL(squler.QueryHandler):
+class NoSQL(blindsqler.QueryHandler):
 	""" No se usa ninguna SQL Injection, la expresión de evalua en Python """
 	def __init__(self, n, rango = None):
 		if rango is None:
@@ -19,7 +19,7 @@ class NoSQL(squler.QueryHandler):
 			data = '=' + data # Para que no haya error de sintaxis
 		return eval('self.n %s' % data)
 
-class Localhost(squler.QueryHandler):
+class Localhost(blindsqler.QueryHandler):
 	""" El manejador de querys de un server de prueba """
 	def __init__(self, uid, field):
 		self.uid = uid # El ID del usuario
@@ -40,7 +40,7 @@ class TestMain(unittest.TestCase):
 		de esta """
 		handlers = [Localhost(1,'password'), NoSQL(1732)]
 		for handler in handlers:
-			self.assertTrue(isinstance(handler, squler.QueryHandler))
+			self.assertTrue(isinstance(handler, blindsqler.QueryHandler))
 
 	def test_localhost_querys(self):
 		""" Verifica que las querys funcionen bien en localhost """
@@ -60,13 +60,13 @@ class TestMain(unittest.TestCase):
 		""" Verifica que la función adivinaint funcione correctamene """
 		handlers = [NoSQL(1,[0,1]), NoSQL(7365), NoSQL(128,[0,255])]
 		for handler in handlers:
-				self.assertEqual(squler.adivinaint(handler,handler.rango),
+				self.assertEqual(blindsqler.adivinaint(handler,handler.rango),
 								handler.n)
 
 		# Probamos que raisee ValueError si le pasamos un rango equivocado
 		handler = NoSQL(100,[10,20])
 		with self.assertRaises(ValueError):
-			squler.adivinaint(handler,handler.rango)
+			blindsqler.adivinaint(handler,handler.rango)
 
 	def test_adivina_pin(self):
 			""" Intenta adivinar el pin de los usuarios con id 1 y 2.
@@ -74,7 +74,7 @@ class TestMain(unittest.TestCase):
 			tests = (Localhost(1,'pin'), 1204), \
 				  (Localhost(2,'pin'), 12345) # el campo pin es SMALLINT
 			for handler, val in tests:
-					self.assertEqual(squler.adivinaint(handler,[-32768, 32767]),
+					self.assertEqual(blindsqler.adivinaint(handler,[-32768, 32767]),
 									 val)
 
 	def test_adivina_length(self):
@@ -83,15 +83,15 @@ class TestMain(unittest.TestCase):
 			tests = (1,len('secret')), (2,len('secret2'))
 			for uid, esperado in tests:
 					handler = Localhost(uid, 'length(password)')
-					self.assertEqual(squler.adivinaint(handler, [0,50]),\
+					self.assertEqual(blindsqler.adivinaint(handler, [0,50]),\
 									esperado)
 	
 	def test_adivina_password(self):
 			""" Adivina las contraseñas ('secret' y 'secret2') """
 			tests = (1,'secret'),(2,'secret2')
 			for uid, esperado in tests:
-			handler = Localhost(uid, 'password')
-				self.assertEqual(esperado, squler.adivinastr(handler))
+				handler = Localhost(uid, 'password')
+				self.assertEqual(esperado, blindsqler.adivinastr(handler))
 
 if __name__ == '__main__':
 	unittest.main()

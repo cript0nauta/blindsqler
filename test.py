@@ -86,21 +86,12 @@ class TestMain(unittest.TestCase):
 					self.assertEqual(squler.adivinaint(handler, [0,50]),\
 									esperado)
 	
-	def test_adivina_password_manual(self):
-			""" Adivina las contraseñas sin usar adivinastr """
+	def test_adivina_password(self):
+			""" Adivina las contraseñas ('secret' y 'secret2') """
 			tests = (1,'secret'),(2,'secret2')
 			for uid, esperado in tests:
-				# Primero calculamos la longitud
-				length = squler.adivinaint(Localhost(uid,\
-								'length(password)'),[0,50])
-
-				# Adivinamos caracter por caracter
-				result = ''
-				for i in range(1, length + 1):
-					handler = Localhost(uid, 'ord(substring(password,%s,1))'%i)
-					char = chr(squler.adivinaint(handler,[0,255]))
-					result += char
-				self.assertEqual(result,esperado)
+			handler = Localhost(uid, 'password')
+				self.assertEqual(esperado, squler.adivinastr(handler))
 
 if __name__ == '__main__':
 	unittest.main()

